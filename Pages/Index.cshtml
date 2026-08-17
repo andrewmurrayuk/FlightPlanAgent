@@ -1,0 +1,37 @@
+@page
+@model FlightPlanAgent.Pages.IndexModel
+
+<header class="hero">
+    <h1>PA28 Flight Planning Agent</h1>
+    <p class="subtitle">Agentic demo — Claude plans a Scottish VFR route using live weather and nav-log tools.</p>
+    <p class="disclaimer">
+        ⚠️ Demo only. Not a substitute for a proper flight plan, NOTAMs, and an official weather briefing.
+    </p>
+</header>
+
+<main>
+    <section class="input-panel">
+        <label for="routeRequest">Describe the route</label>
+        <textarea id="routeRequest" rows="3"
+                  placeholder="e.g. I want to fly from Perth to Oban this weekend, VFR, checking the weather">Fly from Perth to Oban, VFR, check the weather and give me a nav log and go/no-go briefing.</textarea>
+        <button id="runAgentBtn">Run agent</button>
+    </section>
+
+    <section id="stepsPanel" class="steps-panel" hidden>
+        <h2>Agent steps</h2>
+        <ol id="stepsList"></ol>
+    </section>
+
+    <section id="briefingPanel" class="briefing-panel" hidden>
+        <h2>Briefing</h2>
+        <div id="briefingText"></div>
+    </section>
+
+    <section id="errorPanel" class="error-panel" hidden></section>
+</main>
+
+@section Scripts {
+    <script>
+        window.AGENT_RUN_URL = "@Url.Page("Index", "RunAgent")";
+    </script>
+}
