@@ -1,33 +1,77 @@
 @page
 @model FlightPlanAgent.Pages.IndexModel
 
-<header class="hero">
-    <h1>PA28 Flight Planning Agent</h1>
-    <p class="subtitle">Agentic demo — Claude plans a Scottish VFR route using live weather and nav-log tools.</p>
-    <p class="disclaimer">
-        ⚠️ Demo only. Not a substitute for a proper flight plan, NOTAMs, and an official weather briefing.
-    </p>
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name">Flight Planning Agent</span>
+            <span class="brand-sub">Scottish GA · demonstration</span>
+        </div>
+        <div class="topbar-right">
+            <span class="placard">PA28-161 · Warrior II</span>
+            <span class="clock" id="utcClock" title="Coordinated Universal Time">--:--Z</span>
+        </div>
+    </div>
 </header>
 
-<main>
-    <section class="input-panel">
-        <label for="routeRequest">Describe the route</label>
+<main class="desk">
+
+    <section class="intro">
+        <h1>Briefing desk</h1>
+        <p class="lede">
+            Describe the flight in plain English. The agent looks up the airfields, pulls the live
+            METAR and TAF, works the nav log for each leg, and writes you a go / no-go briefing —
+            deciding for itself what to check and in what order.
+        </p>
+        <p class="notice">
+            <strong>Demonstration only.</strong> Not a substitute for a proper flight plan, NOTAMs,
+            and an official weather briefing. Do not fly on this.
+        </p>
+    </section>
+
+    <section class="request">
+        <label class="field-label" for="routeRequest">Route request</label>
         <textarea id="routeRequest" rows="3"
-                  placeholder="e.g. I want to fly from Perth to Oban this weekend, VFR, checking the weather">Fly from Perth to Oban, VFR, check the weather and give me a nav log and go/no-go briefing.</textarea>
-        <button id="runAgentBtn">Run agent</button>
+                  placeholder="e.g. Perth to Oban, VFR, this afternoon">Fly from Perth to Oban, VFR, check the weather and give me a nav log and go/no-go briefing.</textarea>
+
+        <div class="examples" aria-label="Example requests">
+            <span class="examples-label">Try</span>
+            <button type="button" class="chip" data-example="Fly from Perth to Oban, VFR, check the weather and give me a nav log and go/no-go briefing.">Perth → Oban</button>
+            <button type="button" class="chip" data-example="Inverness to Barra via Stornoway. Two legs, VFR. Weather at all three, nav log per leg, and tell me if the fuel margin is tight.">Inverness → Stornoway → Barra</button>
+            <button type="button" class="chip" data-example="Cumbernauld to Islay, but only if it's VFR at both ends. If not, suggest an alternative destination on the west coast and brief that instead.">Cumbernauld → Islay (conditional)</button>
+            <button type="button" class="chip" data-example="Dundee to Wick. We only have 25 US gallons on board. Is a direct flight sensible, or should we plan a fuel stop?">Dundee → Wick, 25 USG</button>
+        </div>
+
+        <div class="request-actions">
+            <button id="runAgentBtn" class="btn-primary">Prepare briefing</button>
+            <span id="runStatus" class="run-status" aria-live="polite"></span>
+        </div>
     </section>
 
-    <section id="stepsPanel" class="steps-panel" hidden>
-        <h2>Agent steps</h2>
-        <ol id="stepsList"></ol>
-    </section>
+    <div class="board">
+        <section id="stepsPanel" class="worklog" hidden>
+            <div class="panel-head">
+                <h2>Agent worklog</h2>
+                <span class="panel-meta" id="stepsMeta"></span>
+            </div>
+            <ol id="stepsList" class="strip-list"></ol>
+        </section>
 
-    <section id="briefingPanel" class="briefing-panel" hidden>
-        <h2>Briefing</h2>
-        <div id="briefingText"></div>
-    </section>
+        <section id="briefingPanel" class="briefing" hidden>
+            <div class="panel-head">
+                <h2>Briefing</h2>
+                <button type="button" class="btn-ghost" id="copyBriefingBtn">Copy</button>
+            </div>
+            <div id="briefingText" class="briefing-body"></div>
+        </section>
+    </div>
 
-    <section id="errorPanel" class="error-panel" hidden></section>
+    <section id="errorPanel" class="error" hidden></section>
+
+    <footer class="desk-foot">
+        Airfield data and performance figures are approximate and for illustration. Weather via aviationweather.gov.
+    </footer>
 </main>
 
 @section Scripts {
